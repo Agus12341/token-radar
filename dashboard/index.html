@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Launch Radar — pre-token protocols ranked by implied launch value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div>
+        <h1>Token Launch Radar</h1>
+        <p class="tagline">Every protocol that still records no token, ranked by what its launch would be worth — and how to farm it.</p>
+      </div>
+    </div>
+    <div class="mast-stats" id="mastStats"></div>
+  </div>
+</header>
+
+<main>
+  <section class="model panel" id="modelPanel">
+    <div class="model-head">
+      <h2>How the radar values a launch</h2>
+      <p class="model-formula">implied value = TVL &times; category multiple &times; momentum &times; seasoning</p>
+    </div>
+    <div class="model-cols">
+      <div>
+        <h3>Category multiple</h3>
+        <p>The median market-cap / TVL ratio of protocols in the same DefiLlama category whose token already trades, blended toward the global median (<span id="globalMultiple"></span>) when a category has few traded tokens, and clamped between 0.03 and 3. A lending market is not priced like a DEX, because the snapshot's own traded tokens say so.</p>
+      </div>
+      <div>
+        <h3>Momentum &amp; seasoning</h3>
+        <p>Momentum is the protocol's 7-day TVL change, clamped to &plusmn;30% and worth at most &plusmn;15%. Seasoning is how long it has run with no token recorded, on a five-year square-root curve worth 0.95&times; to 1.30&times;. Nothing on the board is keyed to a name: rerun the program on a fresher snapshot and the board rebuilds itself.</p>
+      </div>
+      <div>
+        <h3>Who is on the board</h3>
+        <p>Protocols that record no token (no CoinGecko id, no symbol) and are not a wrapped, staked, bridged or versioned product of one that trades; protocols whose token already trades are set aside, not ranked. The house watchlist is covered in full — and the radar keeps going below its floor, where launches are earliest.</p>
+      </div>
+    </div>
+    <div class="multiples" id="multiples"></div>
+  </section>
+
+  <section class="panel board-panel" id="boardView">
+    <div class="controls">
+      <input type="search" id="q" placeholder="Search name or slug…" aria-label="Search protocols">
+      <select id="cat" aria-label="Filter by category"><option value="">All categories</option></select>
+      <select id="chain" aria-label="Filter by chain"><option value="">All chains</option></select>
+      <select id="minTvl" aria-label="Minimum TVL">
+        <option value="0">Any TVL</option>
+        <option value="10000000">TVL &ge; $10M</option>
+        <option value="50000000">TVL &ge; $50M</option>
+        <option value="250000000">TVL &ge; $250M</option>
+      </select>
+      <label class="check"><input type="checkbox" id="watchOnly"> Watchlist only</label>
+      <select id="sort" aria-label="Sort the board">
+        <option value="rank">Sort: implied value</option>
+        <option value="tvl">Sort: TVL</option>
+        <option value="change">Sort: 7d change</option>
+        <option value="age">Sort: age</option>
+        <option value="score">Sort: radar score</option>
+      </select>
+      <span class="count" id="rowCount"></span>
+    </div>
+    <div class="table-wrap">
+      <table id="board">
+        <thead>
+          <tr>
+            <th class="num">#</th><th>Protocol</th><th>Category</th><th class="num">TVL</th>
+            <th class="num">7d</th><th class="num">Age</th><th class="num">Mult</th>
+            <th class="num">Implied value</th><th>Radar</th>
+          </tr>
+        </thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+    </div>
+    <p class="foot" id="boardFoot"></p>
+  </section>
+
+  <section class="panel detail" id="detailView" hidden>
+    <button class="back" id="backBtn">&larr; Back to the board</button>
+    <div id="detailBody"></div>
+  </section>
+</main>
+
+<footer>
+  <p>Built from a sealed DefiLlama snapshot dated <span id="asOf"></span>. A protocol here <em>records</em> no token; that is the snapshot's record, not proof none exists. Implied values are this radar's own model, stated so a reader can disagree with them. Nothing here is financial advice.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
